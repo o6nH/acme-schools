@@ -1,5 +1,6 @@
 const db = require('..');
 
+// Model Definition
 const Student = db.define('student', {
   id: {
     type: db.Sequelize.UUID,
@@ -32,6 +33,18 @@ const Student = db.define('student', {
   gpa: {
     type: db.Sequelize.DECIMAL
   }
-})
+});
+
+// Class Methods
+Student.putItUp = async function (id, newData) {
+  const student = await this.findByPk(id);
+  const updatedStudent = {...student, ...newData};
+  return await student.update(updatedStudent, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId']});
+};
+
+Student.remove = async function (id) {
+  const student = await this.findByPk(id);
+  await student.destroy();
+};
 
 module.exports = Student;

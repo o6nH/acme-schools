@@ -112,11 +112,11 @@ git push -u origin master
 ```
 
 # Backend: Database Setup
-## Install Backend Server Modules
+## Install Backend Database Server Modules
 Install the necessary server modules: 
 
 ```bash
-npm install express sequelize pg pg-hstore
+npm install sequelize pg pg-hstore
 ```
 
 ## Create PostgreSQL Database
@@ -252,11 +252,18 @@ const School = db.define('student', {
 module.exports = School;
 ```
 
+## Model Associations
 An `index.js` file could be added to the `/src/server/db/models` folder so that importing all models from other locations can be done in one line.
+
+This is also a good place to [associate](http://docs.sequelizejs.com/manual/associations.html) all of our models.
 
 ```javascript
 const School = require('./School');
 const Student = require('./Student');
+
+//Associations
+School.hasMany(Student);
+Student.belongsTo(School);
 
 module.exports = {School, Student}
 
@@ -330,6 +337,7 @@ seed();
 ```
 
 ### Verify Tables are Seeded and Update Dummy Data
+
 Use the `pgAdmin4` GUI to update dummy data with `id` to avoid randomly generating new ids everytime we re-seed the database.
 
 ```javascript
@@ -398,3 +406,63 @@ const seed = async () => {
 seed();
 ```
 
+# Backend: Express Server and API Routes
+## Install Backend Express Server Modules
+Install the necessary server modules: 
+
+```bash
+npm install express
+```
+
+## Create API Routes with Database Queries
+In `/src/server/routes/api`, create `students.js` and `schools.js` route files that will be imported by `/src/server/routes/index.js`.
+
+Create routes that will **[query](http://docs.sequelizejs.com/manual/models-usage.html)** the database depending on the api route in the URL.
+
+Routes may redirect to pages or an api. Here the routes are a part handle api calls.
+
+```javascript
+
+
+```
+
+## Add Class and Instance Methods to Models
+
+```javascript
+
+
+```
+
+> [!Note]
+> Use `function` notation, rather than arrow notation, to bind `this` to either the class/Model in class methods or instances in instance methods.
+
+
+## Create Basic HTTP Routes
+Express will handle HTTP requests depending on the pathname matched by the express `app`.
+
+
+```javascript
+
+
+```
+
+## Create the Server's `start` Script
+When `node` runs `./src/server/index.js`, Express should begin to listen on port `3000`.
+
+The routes can be tested with [Postman](https://www.getpostman.com/) or browser.
+
+> [!NOTE]
+> Define `script.start:dev` property in the the `package.json` file that will run Express, and, in turn, listen for incoming HTTP requests.
+>
+>```json
+>{
+>  "scripts": {
+>    "start:dev": "nodemon src/server/index.js --ignore dist --ignore src"
+>  }
+>}
+>```
+
+>```bash
+> npm run start:dev
+>```
+>

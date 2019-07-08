@@ -21,7 +21,7 @@ const studentIds = [
   '60b12ed6-4882-4756-8ef9-b872df528655',
   '685906a3-942d-48ed-ba0b-80dd9ec1f72e',
   '7378d9bd-68d2-4345-93dc-7a3f8c2c4055'
-]
+];
 
 const students = [
   'Buster Bunny',
