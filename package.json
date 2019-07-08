@@ -1,0 +1,35 @@
+{
+  "name": "acme-schools",
+  "version": "1.0.0",
+  "description": "practice app for school enrollments using react components, redux stores, react-routers, an express server, sequelize mapping, and a postgres database.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node ./src/server/db/seed.js"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "router",
+    "express",
+    "server",
+    "sequelize",
+    "sql",
+    "models",
+    "database",
+    "components",
+    "postgres",
+    "action",
+    "types",
+    "action",
+    "reducers"
+  ],
+  "author": "Hugo Campos",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.9.4"
+  }
+}

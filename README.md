@@ -1,0 +1,330 @@
+# Acme-Schools
+A junior-level app for practicing:
+* Back-end with:
+  - Sequelize
+    + models
+      1) `define`
+    + model associations
+      1) `Model.belongsTo`
+      2) `Model.hasMany`
+    + hooks
+      1) `beforeCreate`
+      2) `beforeUpdate`
+      3) `beforeSave`
+    + instances methdos || class methods
+      1) `instance.create` || `Model.bulkCreate`
+      2) `instance.destroy`|| `Model.bulkDestroy`
+      3) `instance.update` || `Model.bulkUpdate`
+    + queries
+      1) `Model.find`
+      1) `Model.findOrCreate`
+      1) `Model.findAll`
+  - Express
+    + routes
+      1) `app.get`
+      2) `app.post`
+      3) `app.put`
+      4) `app.delete`
+    + middleware
+      1) `app.use`
+    + api routes
+
+* Front-end with:
+  - React
+    + components
+      1) presentational components
+      2) container components
+  - Redux
+    + state stores
+    + state reducers
+    + action types
+    + action creators
+
+# Dev Setup
+## File Structure
+In the root `acme-schools` project directory, create a `/dist` folder for the final distribution of the project and a `/src` folder for `/public` assets, `/client`-side code, and `/server`-side code. 
+
+In the `src/client` directory create a `components` folder to store **React components**. 
+
+In the `src/server` directory, create both a `/routes` folder and a `/db` folder to respectively store the **Express routes** that manage **HTTP requests** on port `3000` and the **Sequelize [<abbr title="Object-Relational Mapping">ORM</abbr>](https://www.google.com/search?q=orm)** that manage **SQL tables/models and queries** on a **PostgresSQL server** on port `5432` with the PostgreSQL client module, **pg**.
+
+```bash
+acme-schools
+├───dist
+└───src
+    ├───client
+    │   └───components
+    ├───public
+    └───server
+        ├───db
+        │   └───models
+        └───routes
+            └───api
+```
+
+## Initialize NPM
+In the root project folder, create the `package.json` file.
+
+```bash
+npm init
+```
+> [!Note]: `node.js` includes `npm`.
+
+## Initialize a Local Git Repo
+In the root project folder, begin tracking your documents with `git`.
+
+```bash
+git init
+```
+### Add a `.gitignore`
+To prevent the tracking of the `node_modules` directory and any private files, create a `.gitignore` file.
+
+```git
+<!-- .gitignore file -->
+node_modules
+password.js
+```
+> [!WARNING] 
+> **RE: Git**
+> Before committing, confirm that any files you expect to ignore are in the `.gitignore` file.
+
+
+### Add a Remote Repo
+Use a GitHub account to create a new [remote repo](https://help.github.com/en/articles/adding-an-existing-project-to-github-using-the-command-line), locals call `origin`, which links to a specified `remote repo URL`. 
+
+```bash
+git remote add origin https://github.com/o6nH/acme-schools.git
+# To confirm, run:
+git remote -v 
+```
+
+### Push Local Commit to Remote Repo
+Add all files onto the git staging area and save a commit with a message to the local repo. Then, push a copy of the master the current master **branch** to a master branch upstream to the remote `origin` repo.
+
+```bash
+# To view status:
+git status
+# To stage and commit directory files:
+git add .
+git commit -m 'init commit'
+# To push local master branch to a remote repo aliased as origin
+git push -u origin master
+```
+
+# Backend: Database Setup
+## Install Backend Server Modules
+Install the necessary server modules: 
+
+```bash
+npm install express sequelize pg pg-hstore
+```
+
+## Create PostgreSQL Database
+Install [PostgreSQL](https://www.postgresql.org/download/). 
+
+Save a *Role* username and password (perhaps via *pgAdmin4*).
+
+Assuming the default role/username was kept (`postgres`), create a database called in the terminal.
+
+```bash
+createdb.exe -U postgres schools
+```
+
+### Verifying creation of database
+To confirm PostgreSQL created the database either use `psql` in the command line or use the [pgAdmin4](https://www.pgadmin.org/docs/pgadmin4/dev/) <abbr title='Graphical User Interface'>GUI</abbr>
+
+```bash
+psql -U postgres
+```
+
+To *list* databases in `psql` run the `\l` command.
+
+```psql
+postgres=# \l
+```
+
+## Create a Database Connection with Sequelize
+In `src/server/db` create a new [`index.js`](./src/server/db/index.js) file that establishes a connection to newly created database.
+
+In general the code should look like this: 
+
+```javascript
+const Sequelize = require('sequelize');
+
+const dialect = 'postgres';
+const username = 'postgres';
+const password = '';
+const userInfo = `${username}:${password}`;
+const host = 'localhost';
+const port = process.env.DB_PORT || 5432;
+const dbName = 'schools';
+
+const dbUrl = process.env.DATABASE_URL || `${dialect}://${Boolean(username && password) ? `${userInfo}@`: ''}${host}:${port}/${dbName}`;
+
+const db = new Sequelize(dbUrl, {logging: false});
+/* Alternative:  
+const db = new Sequelize(dbName, username, password, {
+  dialect: 'postgres',
+  host: 'localhost',
+  port: process.env.DB_PORT||5432,
+  logging: false
+});
+ */
+
+db.authenticate()
+  .then(()=>{
+    console.log(`Sequelize successfully connected to: ${dbUrl}.`);
+  })
+  .catch(err => {
+    console.error('Sequelize failed to connect to the DB: ', err);
+  });
+
+module.exports = db;
+```
+
+## Create Tables/Models in Database
+Define a **schema** for the **models/tables** that will be added to our [`school`](#Create-a-Database-Connection-with-Sequelize) database above. Use the built-in Sequelize instance method `define()` in the new Sequelize connection (`db`) established. Include the model name and attributes with their options (like type and validation).
+
+```javascript
+const db = require('..');
+
+const Student = db.define('student', {
+  id: {
+    type: db.Sequelize.UUID,
+    defaultValue: db.Sequelize.UUIDV4,
+    primaryKey: true
+  },
+  firstName: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  lastName: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  email: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+      notEmpty: true
+    }
+  },
+  gpa: {
+    type: db.Sequelize.DECIMAL
+  }
+})
+
+module.exports = Student;
+```
+
+```javascript
+const db = require('..');
+
+const School = db.define('student', {
+  id: {
+    type: db.Sequelize.UUID,
+    defaultValue: db.Sequelize.UUIDV4,
+    primaryKey: true
+  },
+  name: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  imageUrl: {
+    type: db.Sequelize.STRING,
+    validate: {
+      isUrl: true
+    }
+  }
+})
+
+module.exports = School;
+```
+
+An `index.js` file could be added to the `/src/server/db/models` folder so that importing all models from other locations can be done in one line.
+
+```javascript
+const School = require('./School');
+const Student = require('./Student');
+
+module.exports = {School, Student}
+
+//elsewhere import with: 
+//`const {School, Student} = require(`${rootPath}/src/server/db/models`); `
+```
+
+## Sync Connection To Database and Seed Data
+In `package.js` include a `seed` script. 
+```JSON
+{... ,
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node ./src/server/db/seed.js"
+  },
+...}
+```
+
+Create a `seed.js` file in `./src/server/db` directory. In the `seed.js` file, use `db.sync({force:true})`, to force the database connection to **drop old data tables/models** and synchronize with the *models* that were already defined and imported.
+
+Afterwards, **seed** *dummy data* to the database by mapping each record to a model using `Model.create(value)`, or use `Model.bulkCreate()` to record the instances in an array of dummy data.
+
+```javascript
+const db = require('.');
+const { School, Student } = require('./models');
+
+const schools = [
+  {name: 'California Polytechnic State University', imageUrl: 'https://en.wikipedia.org/wiki/California_Polytechnic_State_University#/media/File:CalPoly_Seal.svg'},
+  {name: 'California Institute of Technology', imageUrl: 'https://upload.wikimedia.org/wikipedia/en/a/a4/Seal_of_the_California_Institute_of_Technology.svg'},
+  {name: 'Princeton University', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Princetonshieldlarge.png'},
+  {name: 'Stanford University', imageUrl: 'https://en.wikipedia.org/wiki/Stanford_University#/media/File:Stanford_University_seal_2003.svg'},
+  {name: 'Harvard University', imageUrl: 'https://upload.wikimedia.org/wikipedia/en/2/29/Harvard_shield_wreath.svg'},
+];
+
+const students = [
+  'Buster Bunny',
+  'Plucky Duck',
+  'Hamton Pig',
+  'Dizzy Devil',
+  'Elmyra Duff',
+  'Montana Max',
+  'Hugo Campos',
+  'Eric Katz',
+  'Dan Schwab',
+  'Johnathan Mann',
+  'Preston Wallace'
+  ]
+  .map(fullName => {
+    const names = fullName.split(' ');
+    const firstName = names[0];
+    const lastName = names[1];
+    const firstInitial = firstName.split('')[0].toLowerCase();
+    const email = `${firstInitial}${lastName.toLowerCase()}@acme.com`;
+    const gpa = Math.round(200+200*Math.random())/100;
+    return {firstName, lastName, email, gpa}
+  });
+
+const seed = async () => {
+  try {
+    await db.sync({force: true});
+    await School.bulkCreate(schools);
+    await Student.bulkCreate(students);
+    db.close();
+  } catch (error) {
+    console.error('Could not seed database.')
+    db.close();
+  }
+};
+
+seed();
+```
