@@ -4,6 +4,7 @@ const router = express.Router();
 // Model
 const {Student} = require('../../db/models');
 
+// Routes
 router.route('/:id')
   .get(async (req, res, next) => {
     try {

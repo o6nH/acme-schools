@@ -419,18 +419,125 @@ In `/src/server/routes/api`, create `students.js` and `schools.js` route files t
 
 Create routes that will **[query](http://docs.sequelizejs.com/manual/models-usage.html)** the database depending on the api route in the URL.
 
-Routes may redirect to pages or an api. Here the routes are a part handle api calls.
+Routes may redirect to pages or an api. Here the routes handle api calls to both `/api/schools/:id?` and `/api/students/:id?`.
 
 ```javascript
+// /src/server/routes/api/school.js
+const express = require ('express');
+const router = express.Router();
 
+// Model
+const {School} = require('../../db/models');
 
+// Routes
+router.route('/:id?')
+  .get(async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      if(id){
+        const school = await School.findByPk(id);
+        res.send(school);
+      } else {
+        res.send(await School.findAll());
+      }
+    } catch (err) {
+      next(err);
+    }
+  });
+
+module.exports = router;
 ```
 
-## Add Class and Instance Methods to Models
+Assuming they are defined, custom model/class methods and instance methods, can also be used. Two custom class methods are included here:
 
 ```javascript
+// /src/server/routes/api/student.js
+const express = require('express');
+const router = express.Router();
+
+// Model
+const {Student} = require('../../db/models');
+
+// Routes
+router.route('/:id')
+  .get(async (req, res, next) => {
+    try {
+      const student = await Student.findByPk(req.params.id);
+      res.send(student);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .put(async (req, res, next) => {
+    try {
+      const updatedStudent = await Student.putItUp(req.params.id, req.body);
+      res.send(updatedStudent);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .delete(async (req, res, next) => {
+    try {
+      await Student.remove(req.params.id);
+      res.end();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router.route('/')
+  .get(async (req, res, next) => {
+    try {
+      res.send(await Student.findAll());
+    } catch (err) {
+      next(err);
+    }
+  })
+  .post(async (req, res, next) => {
+    try {
+      const newStudent = await Student.create(req.body, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId']});
+      res.send(newStudent);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 
+module.exports = router;
+```
+
+The `/src/server/routes/api/index.js` will server as a single exporter for the various api routes.
+
+```javascript
+// /src/server/routes/api/index.js
+const express = require('express');
+const router = express.Router();
+
+router.use('/students', require('./students'));
+router.use('/schools', require('./schools'));
+
+module.exports = router;
+```
+
+## Define Custom Class and Instance Methods to Models
+If a route uses a custom method, those methods could be defined in the file in which the model was defined. In `/src/server/db/model/Student.js`, include the definitions for `Student.putItUp()` and `Student.remove()` used in the [api routes above](#Create-API-Routes-with-Database-Queries):
+
+```javascript
+// Model Definition 
+/* const Student = db.define('student', ... */
+// Class Methods
+Student.putItUp = async function (id, newData) {
+  const student = await this.findByPk(id);
+  const updatedStudent = {...student, ...newData};
+  return await student.update(updatedStudent, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId']});
+};
+
+Student.remove = async function (id) {
+  const student = await this.findByPk(id);
+  await student.destroy();
+};
+
+module.exports = Student;
 ```
 
 > [!Note]
@@ -438,31 +545,73 @@ Routes may redirect to pages or an api. Here the routes are a part handle api ca
 
 
 ## Create Basic HTTP Routes
-Express will handle HTTP requests depending on the pathname matched by the express `app`.
+Express will handle all HTTP requests depending on the pathname matched by the express `app`.
 
+Create an `index.js` file in the `/src/server` directory.
 
 ```javascript
+const db = require('./db');
+const express = require('express');
+const path = require('path');
 
+// Port assignment
+const port = process.env.PORT || 3000;
 
+// Models (asserions included)
+const {School, Student} = require('./db/models');
+
+// Express server app
+const app = express();
+
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+// Static
+// app.use(express.static(path.join(__dirname, '../../dist')));
+app.get('/', (req, res, next) => {
+  try {
+    res.send(`<html><h1>HI!!!!!!</h1></html>`)
+  } catch (err) {
+    next(err)
+  }
+})
+
+// Routes
+app.use('/api', require('./routes/api'));
+
+// Sync then Listen
+async function listen() {
+  await db.sync();
+  console.log('DB synced!');
+  app.listen(port, () => {
+    console.log(`Listening on port ${port}...`);
+  })
+};
+
+listen();
 ```
 
 ## Create the Server's `start` Script
 When `node` runs `./src/server/index.js`, Express should begin to listen on port `3000`.
 
-The routes can be tested with [Postman](https://www.getpostman.com/) or browser.
+Define `script.start:dev` property in the the `package.json` file that will run the Express app, such that it listens for incoming HTTP requests.
 
-> [!NOTE]
-> Define `script.start:dev` property in the the `package.json` file that will run Express, and, in turn, listen for incoming HTTP requests.
->
->```json
->{
->  "scripts": {
->    "start:dev": "nodemon src/server/index.js --ignore dist --ignore src"
->  }
->}
->```
+```json
+{
+  // ...
+  "scripts": {
+    // ...
+    "start:dev": "nodemon src/server/index.js --ignore dist --ignore src"
+  }
+  // ...
+}
+```
 
->```bash
-> npm run start:dev
->```
->
+To run start the server run the script in the terminal.
+
+```bash
+ npm run start:dev
+```
+
+If successful, the routes can be tested with either [Postman](https://www.getpostman.com/) or a browser.
