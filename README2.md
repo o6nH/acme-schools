@@ -11,47 +11,140 @@ app.get('/', express.static(path.join(__dirname, '../public')))
 
 # Frontend: Module Bundler and Code Compiler
 ## Install Webpack Module Bundler
-Install `webpack` (and possibly `webpack-cli`)
+Install [Wepback](https://webpack.github.io/) and `webpack-cli`, in order to bundle the `src/public/index.html`, as well as any corresponding `<link>` and `<script>` files, into static files in the `dist` directory.
+
+```bash
+npm install webpack webpack-cli --save-dev
+```
+
+Create a `webpack.config.js` file that will be configured later.
+
+## Install Babel Modules
+Install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and [Nodemon](./README.md#Create-the-Server's-`start`-Script), in order to code the front-end with newer ES6 syntax, which includes the deconstructed imports, default exports, polyfilled async-awaits, sugared classes, etc., install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and *Nodemon*. Babel will also change the React JSX to JS.
+
+These Babel modules will be used by [Wepback](https://webpack.github.io/) to bundle your module's into static `output` code files that made accessible by the *Express server*.
+
+After Webpack finishes the bundling (which will happen periodically, if `webpack` is run with the `-w`tag, in order to watch the files that are linked to the **`entry`-point** indicated by the `webpack.config.js` file), it, by default, outputs a `main.js` file to the `dist` directory, which is created if non-existant. 
+
+Install the `@babel/core`, `@babel/polyfill`, and `babel-loader`. The `babel-loader` will let webpack use `@babel-core` and `@babel/polyfill` try to convert any new JS or JSX files, starting with the `entry`-point file, to the bundled vanilla `dist/main.js` file.
+
+```bash
+# TODO: In package.json, include a target in the preset environment to avoid the deprecated polyfill under babel.preset = ["@babel/preset-react", ["@babel/preset-env", "target":{"node":10}]
+npm install @babel-core @babel/polyfill babel-loader --save-dev
+```
+
+## Configure `webpack.config.js`
+By default Webpack will look for the `entry`-point at `src/index.js`, but, here, it should look at `src/client/index.js`, which is where the first React components (`<App/>`) with JSX will be rendered to the <abbr title='Document Object Model'>DOM</abbr>.
 
 ```javascript
-npm install webpack
+const path = require('path');
+
+module.exports = {
+  mode: 'development',
+  entry: [
+    '@babel/polyfill', // enables async-await
+    path.join(__dirname, 'src', 'client', 'index.js')],
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_module/,
+        loader: 'babel-loader'
+      }
+    ]
+  }
+}
 ```
-## Install Babel Modules
-In order to code the front-end with newer ES6 syntax, such as deconstructed imports, default exports, polyfilled async-awaits, sugared classes, etc., install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and *Nodemon*.
 
-These Babel modules will be used by [Wepback](https://webpack.github.io/) to bundle your module's into static `output` code files that *Express server* file serves.
+## Configure `.bablerc`
+Create the Babel config file, `.babelrc`, and include **presets** (or a collection of *plug-ins*) in order for Babel to recognize both the React code with JSX and the plain JS it needs to transpile.
 
-After Webpack finishes the bundling (which will happen periodically, if `webpack` is run with the `-w`tag, in order to watch the files that are linked to the **`entry`-point** indicated by the `webpack.config.js` file),
+```bash
+npm i @babel/preset-react @babel/preset-env --save-dev
+```
 
-## Configure `webpack.config.js` and `.babelrc`
+```json
+{
+  "presents": [
+    "@babel/preset-react",
+    "@babel/preset-env"
+    ]
+    /*
+    Babel uses these "presets" to know how to transpile your code:
+      'react': teaches Babel to recognize JSX
+      'env': teaches Babel to transpile Javascript. You can reduce the size of your bundle by limiting the number of features/plug-ins you transpile. Learn more at: https://github.com/babel/babel-preset-env
+    */
+}
+```
 
+# Frontend: Create React Components and Connect Redux State and Dispatcher
+Intall `react` and `react-dom`.
+```bash
+npm install react react-dom --save-dev
+```
 
 ## Run Webpack
 Nodemon script was defined [above](#Create-the-Server's-`start`-Script).
+
 ```json
 {
   // ...
   "scripts": {
     // ...
-    "start:dev": "nodemon src/server/index.js --ignore dist --ignore src"
+    "bundle:dev": "webpack --watch",
+    "start:dev": "nodemon src/server/index.js --ignore dist --ignore src",
   }
   // ...
 }
 ```
 
+```bash
+npm run bundle:dev
+```
 
-# Frontend: Create React Components and Connect Redux State and Dispatcher
-Intall `react`, `react-dom`, and `react-router-dom nj`
 
-## Create Container Components From Presentational Components
-Install `react-redux`
 
-## Connect Redux Store (State and Dispatchers) To React Props
+
+
+
+
+
+Install `react-router-dom`
+```bash
+npm install react-router-dom --save-dev
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Frontend: Create Redux Store
 
 ## Define Action/Thunk Creators 
 Install `redux` and `redux-thunks`
+## Create Container Components From Presentational Components
+Install `react-redux`
+### Connect Redux Store (State and Dispatchers) To React Props
+
+
+
+
+
+
+
+
+
+
 
 ```bash
 npm install redux redux-thunks

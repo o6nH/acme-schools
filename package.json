@@ -4,9 +4,9 @@
   "description": "practice app for school enrollments using react components, redux stores, react-routers, an express server, sequelize mapping, and a postgres database.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node ./src/server/db/seed.js",
-    "start:dev": "nodemon ./src/server --ignore dist --ignore src"
+    "start:dev": "nodemon ./src/server --ignore ./dist --ignore ./src",
+    "bundle:dev": "webpack --watch"
   },
   "keywords": [
     "react",
@@ -32,5 +32,16 @@
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.9.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
   }
 }

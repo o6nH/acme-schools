@@ -55,7 +55,10 @@ acme-schools
 ├───dist
 └───src
     ├───client
-    │   └───components
+    │   ├───actions
+    │   ├───components
+    │   ├───containers
+    │   └───reducers
     ├───public
     └───server
         ├───db
