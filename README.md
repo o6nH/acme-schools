@@ -39,6 +39,8 @@ A junior-level app for practicing:
     + state reducers
     + action types
     + action creators
+    + thunk middleware
+    + thunks
 
 # Dev Setup
 ## File Structure
@@ -569,6 +571,7 @@ app.use(express.urlencoded({extended: true}));
 
 // Static
 // app.use(express.static(path.join(__dirname, '../../dist')));
+// app.get('/', express.static(path.join(__dirname, '../../dist')));
 app.get('/', (req, res, next) => {
   try {
     res.send(`<html><h1>HI!!!!!!</h1></html>`)
@@ -593,10 +596,16 @@ listen();
 ```
 
 ## Create the Server's `start` Script
-When `node` runs `./src/server/index.js`, Express should begin to listen on port `3000`.
+First, install [Nodemon](https://nodemon.io/), a monitoring utility for the server, that will watch for changes in the underlying source code.
 
-Define `script.start:dev` property in the the `package.json` file that will run the Express app, such that it listens for incoming HTTP requests.
+```bash
+npm install nodemon
+```
 
+When `node` (or, in this case, `nodemon`) runs `./src/server/index.js`, Express should begin to listen for incoming HTTP requestson port `3000`.
+
+
+Define the `script.start:dev` property in the `package.json` file that will run the Express app. 
 ```json
 {
   // ...
@@ -608,10 +617,12 @@ Define `script.start:dev` property in the the `package.json` file that will run 
 }
 ```
 
-To run start the server run the script in the terminal.
+To run the script that starts the server run the following command in the terminal:
 
 ```bash
- npm run start:dev
+npm run start:dev
 ```
 
-If successful, the routes can be tested with either [Postman](https://www.getpostman.com/) or a browser.
+If successful, the routes can be tested with either [Postman](https://www.getpostman.com/), tests, or a browser.
+
+[NEXT](./README2.md)
