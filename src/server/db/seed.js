@@ -43,8 +43,11 @@ const students = [
     const lastName = names[1];
     const firstInitial = firstName.split('')[0].toLowerCase();
     const email = `${firstInitial}${lastName.toLowerCase()}@acme.com`;
-    const gpa = Math.round(200+200*Math.random())/100;
-    return {id, firstName, lastName, email, gpa}
+    const gpa = fullName === 'Hugo Campos' ? 3.8 : Math.round(200+200*Math.random())/100;
+    const schoolId = fullName.length < 11 
+      ? schools[4].id 
+      : (fullName === 'Hugo Campos' ? schools[0].id : null);
+    return {id, firstName, lastName, email, gpa, schoolId}
   });
 
 const seed = async () => {

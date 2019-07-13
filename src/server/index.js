@@ -16,16 +16,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // Static
-// app.use(express.static(path.join(__dirname, '../../dist')));
-// app.get('/', express.static(path.join(__dirname, '../../dist')));
-app.get('/', express.static(path.join(__dirname, '../public')));
-/* app.get('/', (req, res, next) => {
+app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
+//app.get('/', express.static(path.join(__dirname, '..', 'public')));
+app.get('/', (req, res, next) => {
   try {
-    res.send(`<html><h1>HI!!!!!!</h1></html>`)
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
   } catch (err) {
     next(err)
   }
-}) */
+});
 
 // Routes
 app.use('/api', require('./routes/api'));
