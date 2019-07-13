@@ -3,19 +3,22 @@ import loggingMiddleware from 'redux-logger';
 import thunksMiddleware from 'redux-thunk';
 import axios from 'axios';
 
+/* // Initial State
+const initState = {
+  schools: [],
+  students: []
+}; */
+
 // Actions
 const Act = {
   GET_STUDENTS: 'GET_STUDENTS',
-  GET_STUDENT: 'GET_STUDENT',
   CREATE_NEW_STUDENT: 'CREATE_NEW_STUDENT',
-  UPDATE_STUDENT: 'UPDATE_STUDENT',
+  // UPDATE_STUDENT: 'UPDATE_STUDENT',
   DELETE_STUDENT: 'DELETE_STUDENT',
   GET_SCHOOLS: 'GET_SCHOOLS',
-  GET_TOP_SCHOOL: 'GET_TOP_SCHOOL',
-  GET_POP_SCHOOL: 'GET_POP_SCHOOL',
 }
 
-// HelperFunctions
+// Helper Functions
 export const studentsInSchool = (students, schoolId) =>
   students.filter(student => student.schoolId === schoolId);
 
@@ -39,25 +42,15 @@ const setStudentStats = (schools, students) => {
   }
 };
 
-//Initial State
-const initState = {
-  schools: [],
-  students: [],
-  topSchool: {},
-  popSchool: {}
-}
-
-//Thunk Creators
-export const fetchSchools = () => (dispatch, getState, axios) => {
-  axios.get('/api/schools')
-    .then(({data:schools}) => dispatch({type: Act.GET_SCHOOLS, schools}))
-    .catch(err => console.error(err));
-};
-
-export const fetchStudents = () => (dispatch, getState, axios) => {
-  axios.get('/api/students')
-    .then(({data:students}) => dispatch({type: Act.GET_STUDENTS, students}))
-    .catch(err => console.error(err));
+export const getTopSchool = (schools, students) => {
+  if(schools.length && students.length) {
+    schools = setStudentStats(schools, students);    
+    const topSchool = schools.reduce((maxGPASchool, school) => {
+      return school.aveGPA > maxGPASchool.aveGPA
+      ? school : maxGPASchool
+    }, {aveGPA: 0});
+    return topSchool;
+  }
 };
 
 export const getPopSchool = (schools, students) => {
@@ -72,28 +65,47 @@ export const getPopSchool = (schools, students) => {
   }
 };
 
-export const getTopSchool = (schools, students) => {
-  if(schools.length && students.length) {
-    schools = setStudentStats(schools, students);    
-    const topSchool = schools.reduce((maxGPASchool, school) => {
-      return school.aveGPA > maxGPASchool.aveGPA
-      ? school : maxGPASchool
-    }, {aveGPA: 0});
-    return topSchool;//{}
-  }
+// Thunk Creators
+export const fetchSchools = () => (dispatch, getState, axios) => {
+  axios.get('/api/schools')
+  .then(({data:schools}) => dispatch({type: Act.GET_SCHOOLS, schools}))
+  .catch(err => console.error(err));
 };
 
-//Reducers
-const reducer = (state = initState, action) => {
+export const fetchStudents = () => (dispatch, getState, axios) => {
+  axios.get('/api/students')
+  .then(({data:students}) => dispatch({type: Act.GET_STUDENTS, students}))
+  .catch(err => console.error(err));
+};
+
+export const createStudent = (newStudent) => (dispatch, getState, axios) => {
+  axios.post('/api/students', newStudent)
+    .then(({data:student}) => dispatch({type: Act.CREATE_NEW_STUDENT, student}))
+}
+
+// Reducers
+const schoolReducer = (state = [], action) => {
   switch (action.type) {
     case Act.GET_SCHOOLS:
-      return {...state, schools: action.schools};
-    case Act.GET_STUDENTS:
-      return {...state, students: action.students};
+      return action.schools;
     default:
       return state;
   }
 };
 
+const studentReducer = (state = [], action) => {
+  switch(action.type) {
+    case Act.CREATE_NEW_STUDENT:
+      return [...state, action.student];
+    case Act.GET_STUDENTS:
+      return action.students;
+    default:
+      return state;
+  }
+};
 
-export default createStore(reducer, applyMiddleware(loggingMiddleware, thunksMiddleware.withExtraArgument(axios)));
+// Store
+export default createStore(
+  combineReducers({schools: schoolReducer, students: studentReducer}), 
+  applyMiddleware(loggingMiddleware, thunksMiddleware.withExtraArgument(axios))
+);

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function Schools(props) {
   const {schools} = props;
@@ -7,9 +7,7 @@ export default function Schools(props) {
       <h1>Schools</h1>
       <ul>
         {
-          schools.map(school => 
-            <li key={school.id}>{school.name}</li>
-          )
+          schools.map(school => <li key={school.id}>{school.name}</li>)
         }
       </ul>
     </div>

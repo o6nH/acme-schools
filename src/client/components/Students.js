@@ -28,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
   const {id} = ownProps.match.params;
   const {students} = state;
   const enrolledStudents = studentsInSchool(students, id);
-  return {enrolledStudents}
+  return {students, enrolledStudents}
 };
 
 export default connect(mapStateToProps)(Students)

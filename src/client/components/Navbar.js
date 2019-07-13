@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 
 const Navbar = (props) => {
@@ -8,7 +8,7 @@ const Navbar = (props) => {
       const {id:topId, name:topName, aveGPA:topGPA} = topSchool;
       const {id:popId, name:popName} = popSchool;
       const popCount = popSchool.students.length;
-      
+
   return (
     <ul>
       <li><Link to='/'>Home</Link></li>
