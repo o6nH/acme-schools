@@ -3,6 +3,8 @@ import {HashRouter, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
 import Navbar from './Navbar';
 import Home from './Home';
+import Schools from './Schools'
+import Students from './Students'
 import {fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
 class App extends Component {
@@ -11,15 +13,16 @@ class App extends Component {
     this.props.getStudents();
   };
   render(){
+    const {schools, students, schoolCount, studentCount, topSchool, popSchool} = this.props;
     return(
       <HashRouter>
         <h1>Hello from APP</h1>
-        <Route path='/' render={() => <Navbar schoolCount={this.props.schoolCount} studentCount={this.props.studentCount} topSchool={this.props.topSchool} popSchool={this.props.popSchool}/>}/>
-        <Route exact path='/' render={() => <Home/>}/>
-        {/* <Route path='/' component={StudentForm}/>
-        <Route exact path='/schools' component={Schools}/>
-        <Route exact path='/students' component={Students}/>
-        <Route path='/schools/id' component={Students}/> */}
+        <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool}/>}/>
+        <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
+        {/* <Route path='/' component={StudentForm}/> */}
+        <Route exact path='/schools' render={() => <Schools schools={schools}/>}/>
+        <Route exact path='/students' render={() => <Students students={students}/>}/>
+        {/* <Route path='/schools/id' component={Students}/> */}
       </HashRouter>
     )
   }
