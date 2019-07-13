@@ -16,7 +16,7 @@ const Act = {
 }
 
 // HelperFunctions
-const studentsInSchool = (students, schoolId) =>
+export const studentsInSchool = (students, schoolId) =>
   students.filter(student => student.schoolId === schoolId);
 
 const calcAveGPA = (students) => 
@@ -68,7 +68,6 @@ export const getPopSchool = (schools, students) => {
       ? school : maxCountSchool;
       return maxCountSchool;
     }, {students: []})
-    console.log('popSchool from getPopSchool:', popSchool)
     return popSchool;
   }
 };
@@ -80,7 +79,6 @@ export const getTopSchool = (schools, students) => {
       return school.aveGPA > maxGPASchool.aveGPA
       ? school : maxGPASchool
     }, {aveGPA: 0});
-    console.log('topSchool from getTopSchool:', topSchool)
     return topSchool;//{}
   }
 };

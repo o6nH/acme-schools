@@ -21,8 +21,8 @@ class App extends Component {
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
         {/* <Route path='/' component={StudentForm}/> */}
         <Route exact path='/schools' render={() => <Schools schools={schools}/>}/>
-        <Route exact path='/students' render={() => <Students students={students}/>}/>
-        {/* <Route path='/schools/id' component={Students}/> */}
+        <Route exact path='/students' render={({match}) => <Students students={students} match={match}/>}/>
+        <Route path='/schools/:id' component={Students}/>
       </HashRouter>
     )
   }
@@ -35,7 +35,7 @@ const mapStateToProps = (state) => {
     students,
     schoolCount: schools.length, 
     studentCount: students.length,
-    topSchool: getTopSchool(schools, students),//{}
+    topSchool: getTopSchool(schools, students),
     popSchool: getPopSchool(schools, students)
   }
 }

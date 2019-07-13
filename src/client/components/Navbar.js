@@ -3,12 +3,12 @@ import {Link} from 'react-router-dom';
 
 const Navbar = (props) => {
   const {topSchool, popSchool} = props;
-  console.log('from Navbar: ', topSchool);
   
   if(topSchool && popSchool) {
       const {id:topId, name:topName, aveGPA:topGPA} = topSchool;
       const {id:popId, name:popName} = popSchool;
       const popCount = popSchool.students.length;
+      
   return (
     <ul>
       <li><Link to='/'>Home</Link></li>
