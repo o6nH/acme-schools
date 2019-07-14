@@ -65,7 +65,7 @@ module.exports = {
 > [!NOTE] By default Webpack will look for the `entry`-point at `src/index.js`, but, here, it should look at `src/client/index.js`; this is the file from which the root components (`<App/>`) is rendered to the DOM.
 
 ## Install Babel Modules
-Install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and [Nodemon](./README.md#Create-the-Server's-`start`-Script), in order to code the front-end with newer ES6 syntax, which includes the deconstructed imports, default exports, polyfilled async-awaits, sugared classes, etc., install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and *Nodemon*. Babel will also change the React JSX to JS.
+Install [Babel](https://babeljs.io/setup#installation) modules for *Webpack* and [Nodemon](./README.md#Create-the-Server's-`start`-Script), in order to code the front-end with newer ES6 syntax, which includes the deconstructed imports, default exports, polyfilled async-awaits, sugared classes, etc. Babel will also change the React JSX to JS.
 
 These Babel modules will be used by [Wepback](https://webpack.github.io/) to bundle your module's into static `output` code files that made accessible by the *Express server*.
 

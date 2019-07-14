@@ -1,17 +1,19 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {studentsInSchool} from '../store';
+import {selectSchool, studentsInSchool} from '../store';
 
 function Students(props) {
+  const {selectedSchool, match} = props;
+  const selectedSchoolId = (selectedSchool && selectedSchool.id) || '';
   const students = props.students || [];
   const enrolledStudents = props.enrolledStudents || [];
   
   return (
     <div>
-      <h1>Students</h1>
+      <h1>Students {selectedSchoolId && match.path === '/schools/:id' ? ` at ${props.selectedSchool.name}` : ''}</h1>
       <ul>
         {
-          enrolledStudents.length
+          selectedSchoolId && match.path === '/schools/:id'
           ? enrolledStudents.map(student => 
               <li key={student.id}>{student.firstName} {student.lastName}</li>
             )
@@ -25,10 +27,11 @@ function Students(props) {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const {schools, students} = state;
   const {id} = ownProps.match.params;
-  const {students} = state;
+  const selectedSchool = selectSchool(schools, id)[0];
   const enrolledStudents = studentsInSchool(students, id);
-  return {students, enrolledStudents}
+  return {selectedSchool, students, enrolledStudents}
 };
 
 export default connect(mapStateToProps)(Students)

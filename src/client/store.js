@@ -19,7 +19,10 @@ const Act = {
 }
 
 // Helper Functions
-export const studentsInSchool = (students, schoolId) =>
+export const selectSchool = (schools, schoolId) => 
+  schools.filter(school => school.id === schoolId);
+
+export const studentsInSchool = (students, schoolId) => 
   students.filter(student => student.schoolId === schoolId);
 
 const calcAveGPA = (students) => 
