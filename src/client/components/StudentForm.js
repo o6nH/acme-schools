@@ -16,7 +16,7 @@ class StudentForm extends Component {
         <label htmlFor='school'>Enroll at:</label><br/>
         <select name='school'>
           {
-            this.props.schools.map(school => <option value={school.id}>{school.name}</option>)
+            this.props.schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
           }
         </select>
         <br/>

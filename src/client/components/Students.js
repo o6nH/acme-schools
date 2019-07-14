@@ -4,13 +4,13 @@ import {selectSchool, studentsInSchool} from '../store';
 
 function Students(props) {
   const {selectedSchool, match} = props;
-  const selectedSchoolId = (selectedSchool && selectedSchool.id) || '';
+  const selectedSchoolId = match.params.id || '';
   const students = props.students || [];
   const enrolledStudents = props.enrolledStudents || [];
   
   return (
     <div>
-      <h1>Students {selectedSchoolId && match.path === '/schools/:id' ? ` at ${props.selectedSchool.name}` : ''}</h1>
+      <h1>Students {selectedSchoolId && match.path === '/schools/:id' ? ` at ${selectedSchool.name}` : ''}</h1>
       <ul>
         {
           selectedSchoolId && match.path === '/schools/:id'
