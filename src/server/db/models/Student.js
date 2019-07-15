@@ -32,6 +32,12 @@ const Student = db.define('student', {
   },
   gpa: {
     type: db.Sequelize.DECIMAL
+  },
+  imageUrl: {
+    type: db.Sequelize.STRING,
+    validate: {
+      isUrl: true
+    }
   }
 });
 
@@ -39,7 +45,7 @@ const Student = db.define('student', {
 Student.putItUp = async function (id, newData) {
   const student = await this.findByPk(id);
   const updatedStudent = {...student, ...newData};
-  return await student.update(updatedStudent, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId']});
+  return await student.update(updatedStudent, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId', 'imageUrl']});
 };
 
 Student.remove = async function (id) {
