@@ -35,6 +35,7 @@ const Student = db.define('student', {
   },
   imageUrl: {
     type: db.Sequelize.STRING,
+    defaultValue: 'https://cdn.pixabay.com/photo/2014/04/03/10/41/person-311131_1280.png',
     validate: {
       isUrl: true
     }
