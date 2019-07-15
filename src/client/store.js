@@ -16,8 +16,11 @@ const Act = {
 export const selectSchool = (schools, schoolId) => 
   schools.filter(school => school.id === schoolId);
 
-export const studentsInSchool = (students, schoolId) => 
+export const setStudentsToSchool = (students, schoolId) => 
   students.filter(student => student.schoolId === schoolId);
+
+export const studentsNotInSchool = (students, schoolId) => 
+students.filter(student => student.schoolId !== schoolId);
 
 const calcAveGPA = (students) => 
   students.reduce((aveGPA, student, index) => {
@@ -25,10 +28,10 @@ const calcAveGPA = (students) =>
     return aveGPA;
   }, 0);
 
-const setStudentStats = (schools, students) => {
+export const setSchoolStats = (schools, students) => {
   if(schools.length && students.length) {
     return schools.map(school => {
-      const enrolled = studentsInSchool(students, school.id);
+      const enrolled = setStudentsToSchool(students, school.id);
       const aveGPA = calcAveGPA(enrolled);
       return {
         ...school, 
@@ -36,12 +39,14 @@ const setStudentStats = (schools, students) => {
         aveGPA
       }
     })
+  } else {
+    return schools;
   }
 };
 
 export const getTopSchool = (schools, students) => {
   if(schools.length && students.length) {
-    schools = setStudentStats(schools, students);    
+    schools = setSchoolStats(schools, students);    
     const topSchool = schools.reduce((maxGPASchool, school) => {
       return school.aveGPA > maxGPASchool.aveGPA
       ? school : maxGPASchool
@@ -52,14 +57,14 @@ export const getTopSchool = (schools, students) => {
 
 export const getPopSchool = (schools, students) => {
   if(schools.length && students.length){
-    schools = setStudentStats(schools, students);
+    schools = setSchoolStats(schools, students);
     const popSchool = schools.reduce((maxCountSchool, school) => {
       maxCountSchool = school.students.length > maxCountSchool.students.length
       ? school : maxCountSchool;
       return maxCountSchool;
     }, {students: []})
     return popSchool;
-  }
+  } 
 };
 
 // Thunk Creators
@@ -82,7 +87,7 @@ export const createStudent = (newStudent) => (dispatch, getState, axios) => {
 }
 
 export const deleteStudent = (studentId) => (dispatch, getState, axios) => {
-  axios.delete(`/api/student/${studentId}`)
+  axios.delete(`/api/students/${studentId}`)
     .then(() => dispatch({type: Act.DELETE_STUDENT, studentId}))
 }
 
@@ -102,6 +107,8 @@ const studentReducer = (state = [], action) => {
       return [...state, action.student];
     case Act.GET_STUDENTS:
       return action.students;
+    case Act.DELETE_STUDENT:
+      return state.filter(student => student.id !== action.studentId)
     default:
       return state;
   }

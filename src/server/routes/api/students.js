@@ -25,7 +25,7 @@ router.route('/:id')
   .delete(async (req, res, next) => {
     try {
       await Student.remove(req.params.id);
-      res.end();
+      res.sendStatus(204);
     } catch (err) {
       next(err);
     }

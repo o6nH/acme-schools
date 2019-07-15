@@ -1,31 +1,50 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {deleteStudent} from '../store';
+import {deleteStudent} from '../store'; // Imported Thunk Creators
 
 const defaultImg = "https://cdn.pixabay.com/photo/2014/04/03/10/41/person-311131_1280.png"
 
-function Card(props) {
-  const {student, schools} = props
-  return (
-    <div>
-      <h2>{student.name}</h2>
-      <img height='80' src={student.imageUrl || defaultImg} alt={`Image of ${student.firstName}`} />
-      <p>{`${student.firstName} ${student.lastName}`}</p>
-      <p>{`GPA: ${student.gpa}`}</p>
-      <form>
-        <label htmlFor='school'>School: </label>
-        <br/>
-        <select name='school' defaultValue={student.schoolId}>
-          <option value=''>-- Select New School --</option>
-          {
-            schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
-          }
-        </select>
-      </form>
-    </div>
-  )
+class StudentCard extends Component {
+  constructor(props){
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleSubmit(event, id){
+    event.preventDefault();
+    this.props.destroy(id);
+  }
+  render(){
+    const {student, schools} = this.props;
+    const {id, firstName, lastName, imageUrl, gpa, schoolId} = student;
+    return (
+      <div>
+        <h2>{`${firstName} ${lastName}`}</h2>
+        <img height='90' src={imageUrl || defaultImg} alt={`Image of ${firstName}`} />
+        <p>{`GPA: ${gpa}`}</p>
+        <form>
+          <label htmlFor='school'>School: </label>
+          <br/>
+          <select name='school' defaultValue={schoolId}>
+            <option value=''>-- Select New School --</option>
+            {
+              schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
+            }
+          </select>
+        </form>
+        <form  onSubmit={(event) => this.handleSubmit(event, id)}>
+          <input type='submit' value='Delete'/>
+        </form>
+      </div>
+    )
+  }
 };
 
-const mapToProps = (state) => ({schools:state.schools});
+const mapStateToProps = state => ({
+  schools:state.schools
+});
 
-export default connect(mapToProps)(Card);
+const mapDispatchToProps = dispatch => ({
+  destroy: studentId => dispatch(deleteStudent(studentId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentCard);

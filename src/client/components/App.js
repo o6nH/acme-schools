@@ -17,10 +17,12 @@ class App extends Component {
     const {schools, schoolCount, studentCount, topSchool, popSchool} = this.props;
     return(
       <HashRouter>
+        {/* To prevent both the calculations of topSchool and popSchool from happening in multiple components and the storage of top schools and popular schools in the store, this component will pass down stats to both the Navbar and Home components using the render prop for Route*/}
         <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool}/>}/>
         <Route path='/' component={StudentForm}/>
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
-        <Route exact path='/schools' render={() => <Schools schools={schools}/>}/>
+        <Route exact path='/schools' component={Schools}/> 
+        {/* TODO pass down schools with appended student data */}
         <Route exact path='/students' component={Students}/>
         <Route path='/schools/:id' component={Students}/>
       </HashRouter>
@@ -28,6 +30,7 @@ class App extends Component {
   }
 }
 
+// Mappings from Redux's State Store to React Component
 const mapStateToProps = (state) => {
   const {schools, students} = state;
   return {
