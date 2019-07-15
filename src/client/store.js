@@ -66,19 +66,24 @@ export const getPopSchool = (schools, students) => {
 /* I've included axios as a third parameter in case I decide to move creators out of store file and into their own file; it'll allow use in components without having to import axios into sepearate file creators file because axios (here) is passed to thunkMiddleware in store creator (i.e., thunkMiddle.withExtraArgument(axios)). */
 export const fetchSchools = () => (dispatch, getState, axios) => {
   axios.get('/api/schools')
-  .then(({data:schools}) => dispatch({type: Act.GET_SCHOOLS, schools}))
-  .catch(err => console.error(err));
+    .then(({data:schools}) => dispatch({type: Act.GET_SCHOOLS, schools}))
+    .catch(err => console.error(err));
 };
 
 export const fetchStudents = () => (dispatch, getState, axios) => {
   axios.get('/api/students')
-  .then(({data:students}) => dispatch({type: Act.GET_STUDENTS, students}))
-  .catch(err => console.error(err));
+    .then(({data:students}) => dispatch({type: Act.GET_STUDENTS, students}))
+    .catch(err => console.error(err));
 };
 
 export const createStudent = (newStudent) => (dispatch, getState, axios) => {
   axios.post('/api/students', newStudent)
     .then(({data:student}) => dispatch({type: Act.CREATE_NEW_STUDENT, student}))
+}
+
+export const deleteStudent = (studentId) => (dispatch, getState, axios) => {
+  axios.delete(`/api/student/${studentId}`)
+    .then(() => dispatch({type: Act.DELETE_STUDENT, studentId}))
 }
 
 // Reducers (with init states)
