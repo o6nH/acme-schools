@@ -2,6 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {selectSchool, studentsInSchool} from '../store';
 
+// Functional Component 
+/* Contains logic for two differnt views depending on Route's match.params.id) */
 function Students(props) {
   const {selectedSchool, match} = props;
   const selectedSchoolId = match.params.id || '';
@@ -26,12 +28,14 @@ function Students(props) {
   )
 }
 
+// Mapping From Redux Store's State to Functional Component's Props
 const mapStateToProps = (state, ownProps) => {
   const {schools, students} = state;
   const {id} = ownProps.match.params;
-  const selectedSchool = selectSchool(schools, id)[0];
+  const selectedSchool = selectSchool(schools, id)[0] || {name: ''}; //Since I'm using selectedSchool.name and {}.name should crash at startup when schools = []
   const enrolledStudents = studentsInSchool(students, id);
   return {selectedSchool, students, enrolledStudents}
 };
 
+// Export of Store-Connected Container Component
 export default connect(mapStateToProps)(Students)

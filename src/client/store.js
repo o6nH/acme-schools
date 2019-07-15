@@ -3,12 +3,6 @@ import loggingMiddleware from 'redux-logger';
 import thunksMiddleware from 'redux-thunk';
 import axios from 'axios';
 
-/* // Initial State
-const initState = {
-  schools: [],
-  students: []
-}; */
-
 // Actions
 const Act = {
   GET_STUDENTS: 'GET_STUDENTS',
@@ -18,7 +12,7 @@ const Act = {
   GET_SCHOOLS: 'GET_SCHOOLS',
 }
 
-// Helper Functions
+// Exportable Helper Functions
 export const selectSchool = (schools, schoolId) => 
   schools.filter(school => school.id === schoolId);
 
@@ -69,6 +63,7 @@ export const getPopSchool = (schools, students) => {
 };
 
 // Thunk Creators
+/* I've included axios as a third parameter in case I decide to move creators out of store file and into their own file; it'll allow use in components without having to import axios into sepearate file creators file because axios (here) is passed to thunkMiddleware in store creator (i.e., thunkMiddle.withExtraArgument(axios)). */
 export const fetchSchools = () => (dispatch, getState, axios) => {
   axios.get('/api/schools')
   .then(({data:schools}) => dispatch({type: Act.GET_SCHOOLS, schools}))
@@ -86,7 +81,7 @@ export const createStudent = (newStudent) => (dispatch, getState, axios) => {
     .then(({data:student}) => dispatch({type: Act.CREATE_NEW_STUDENT, student}))
 }
 
-// Reducers
+// Reducers (with init states)
 const schoolReducer = (state = [], action) => {
   switch (action.type) {
     case Act.GET_SCHOOLS:
@@ -107,7 +102,7 @@ const studentReducer = (state = [], action) => {
   }
 };
 
-// Store
+// Store (with combined reducers and middlewares)
 export default createStore(
   combineReducers({schools: schoolReducer, students: studentReducer}), 
   applyMiddleware(loggingMiddleware, thunksMiddleware.withExtraArgument(axios))
