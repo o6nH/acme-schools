@@ -41,7 +41,7 @@ router.route('/')
   })
   .post(async (req, res, next) => {
     try {
-      const newStudent = await Student.create(req.body, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId']});
+      const newStudent = await Student.create(req.body, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId', 'imageUrl']});
       res.send(newStudent);
     } catch (err) {
       next(err);

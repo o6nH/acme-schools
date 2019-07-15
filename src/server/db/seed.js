@@ -22,7 +22,7 @@ const students = [
   {id: '685906a3-942d-48ed-ba0b-80dd9ec1f72e', name: 'Johnathan Mann', imageUrl: 'https://media.licdn.com/dms/image/C5603AQGHzrQ7qRyYHA/profile-displayphoto-shrink_800_800/0?e=1568851200&v=beta&t=a82cUAf58E99ZXwwcEy_gDYuikPD7DUF9ls6mGhaDnQ'},
   {id: '7378d9bd-68d2-4345-93dc-7a3f8c2c4055', name: 'Preston Wallace', imageUrl: 'https://media.licdn.com/dms/image/C5603AQHsW5v4e8uT9w/profile-displayphoto-shrink_800_800/0?e=1568851200&v=beta&t=BqB-GACnOCbwF8FAhAqZqJiUjb8I22vIjnyJWgYP9RQ'}
 ].map(student => {
-    const {id, name} = student;
+    const {id, name, imageUrl} = student;
     const names = name.split(' ');
     const firstName = names[0];
     const lastName = names[1];
@@ -32,9 +32,10 @@ const students = [
     const schoolId = name.length < 11 
       ? schools[4].id 
       : (name === 'Hugo Campos' ? schools[0].id : null);
-    return {id, firstName, lastName, email, gpa, schoolId}
+    return {id, firstName, lastName, email, gpa, schoolId, imageUrl}
   });
 
+// Sync to DB then Seed Dummy Data 
 const seed = async () => {
   try {
     await db.sync({force: true});
@@ -43,7 +44,8 @@ const seed = async () => {
     console.log('Synced DB. Seeded DB.')
     db.close();
   } catch (error) {
-    console.error('Could not seed database.')
+    
+    console.error('Could not seed database:', error)
     db.close();
   }
 };

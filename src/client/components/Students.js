@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {selectSchool, studentsInSchool} from '../store';
+import {selectSchool, studentsInSchool} from '../store'; // Imported Thunk Creators
+import Card from './StudentCard';
 
-// Functional Component 
+// Functional Component
 /* Contains logic for two differnt views depending on Route's match.params.id) */
 function Students(props) {
   const {selectedSchool, match} = props;
@@ -12,15 +13,16 @@ function Students(props) {
   
   return (
     <div>
+      {/* If no school selected, needs selectedSchool === {name:''} */}
       <h1>Students {selectedSchoolId && match.path === '/schools/:id' ? ` at ${selectedSchool.name}` : ''}</h1>
       <ul>
         {
           selectedSchoolId && match.path === '/schools/:id'
           ? enrolledStudents.map(student => 
-              <li key={student.id}>{student.firstName} {student.lastName}</li>
+              <li key={student.id}><Card student={student}/></li>
             )
           : students.map(student => 
-              <li key={student.id}>{student.firstName} {student.lastName}</li>
+              <li key={student.id}><Card student={student}/></li>
           )
         }
       </ul>
