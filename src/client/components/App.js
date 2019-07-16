@@ -8,6 +8,7 @@ import Students from './Students';
 import StudentForm from './StudentForm';
 import {fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
+// Component
 class App extends Component {
   componentDidMount(){
     this.props.getSchools();
@@ -47,4 +48,5 @@ const mapDispatchToProps = (dispatch) => ({
   getStudents: () => dispatch(fetchStudents())
 })
 
+// Export of Container Component Connected to App Component
 export default connect(mapStateToProps, mapDispatchToProps)(App)

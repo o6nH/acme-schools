@@ -7,7 +7,7 @@ import axios from 'axios';
 const Act = {
   GET_STUDENTS: 'GET_STUDENTS',
   CREATE_NEW_STUDENT: 'CREATE_NEW_STUDENT',
-  // UPDATE_STUDENT: 'UPDATE_STUDENT',
+  UPDATE_STUDENT: 'UPDATE_STUDENT',
   DELETE_STUDENT: 'DELETE_STUDENT',
   GET_SCHOOLS: 'GET_SCHOOLS',
 }
@@ -84,12 +84,20 @@ export const fetchStudents = () => (dispatch, getState, axios) => {
 export const createStudent = (newStudent) => (dispatch, getState, axios) => {
   axios.post('/api/students', newStudent)
     .then(({data:student}) => dispatch({type: Act.CREATE_NEW_STUDENT, student}))
+    .catch(err => console.error(err));
 }
 
 export const deleteStudent = (studentId) => (dispatch, getState, axios) => {
   axios.delete(`/api/students/${studentId}`)
     .then(() => dispatch({type: Act.DELETE_STUDENT, studentId}))
+    .catch(err => console.error(err));
 }
+
+export const updateStudent = (id, updateObj) => (dispatch, getState, axios) => {
+  axios.put(`/api/students/${id}`, updateObj)
+    .then(({data:student}) => dispatch({type: Act.UPDATE_STUDENT, student}))
+    .catch(err => console.error(err))
+};
 
 // Reducers (with init states)
 const schoolReducer = (state = [], action) => {
@@ -108,7 +116,11 @@ const studentReducer = (state = [], action) => {
     case Act.GET_STUDENTS:
       return action.students;
     case Act.DELETE_STUDENT:
-      return state.filter(student => student.id !== action.studentId)
+      return state.filter(student => student.id !== action.studentId);
+    case Act.UPDATE_STUDENT:
+      // or use state.indexOf to avoid reordering
+      const filteredStateCopy = state.filter(student => student.id !== action.student.id);
+      return [action.student, ...filteredStateCopy];
     default:
       return state;
   }

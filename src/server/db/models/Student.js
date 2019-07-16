@@ -42,9 +42,9 @@ const Student = db.define('student', {
 });
 
 // Class Methods
-Student.putItUp = async function (id, newData) {
+Student.putItUp = async function (id, updatesObj) {
   const student = await this.findByPk(id);
-  const updatedStudent = {...student, ...newData};
+  const updatedStudent = {...student, ...updatesObj};
   return await student.update(updatedStudent, {fields: ['firstName', 'lastName', 'email', 'gpa', 'schoolId', 'imageUrl']});
 };
 

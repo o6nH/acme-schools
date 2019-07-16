@@ -116,6 +116,7 @@ class StudentForm extends Component {
             {
               this.props.schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
             }
+            <option value={null}>Unenroll</option>
           </select>
           <br/>
           <button disabled={isDisabled} type='submit'>Save</button>

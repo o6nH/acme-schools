@@ -19,6 +19,7 @@ router.route('/:id')
       const updatedStudent = await Student.putItUp(req.params.id, req.body);
       res.send(updatedStudent);
     } catch (err) {
+      console.log(err);
       next(err);
     }
   })
