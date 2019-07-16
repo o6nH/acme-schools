@@ -19,8 +19,8 @@ export const selectSchool = (schools, schoolId) =>
 export const setStudentsToSchool = (students, schoolId) => 
   students.filter(student => student.schoolId === schoolId);
 
-export const studentsNotInSchool = (students, schoolId) => 
-students.filter(student => student.schoolId !== schoolId);
+export const getUnenrolledStudents = (students) => 
+  students.filter(student => student.schoolId === null || students.schoolId === '');
 
 const calcAveGPA = (students) => 
   students.reduce((aveGPA, student, index) => {
@@ -112,15 +112,17 @@ const schoolReducer = (state = [], action) => {
 const studentReducer = (state = [], action) => {
   switch(action.type) {
     case Act.CREATE_NEW_STUDENT:
-      return [...state, action.student];
+      return [action.student, ...state];
     case Act.GET_STUDENTS:
       return action.students;
     case Act.DELETE_STUDENT:
       return state.filter(student => student.id !== action.studentId);
     case Act.UPDATE_STUDENT:
-      // or use state.indexOf to avoid reordering
+      /* Reorders (bad)
       const filteredStateCopy = state.filter(student => student.id !== action.student.id);
       return [action.student, ...filteredStateCopy];
+      */
+      return state.map(student => (student.id === action.student.id) ? action.student : student);
     default:
       return state;
   }

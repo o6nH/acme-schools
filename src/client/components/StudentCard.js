@@ -13,24 +13,30 @@ class StudentCard extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
   }
+
   componentDidMount(){
-    this.setState({schoolId: this.props.student.schoolId || ''}) //OR avoids null from database
+    this.setState({schoolId: this.props.student.schoolId || ''}) 
+    //The `OR` here avoids `null`s (from database) for React
   }
+
   handleDelete(event, id){
     event.preventDefault();
     this.props.destroy(id);
   }
+
   handleTransfer(event, studentId){
     event.preventDefault();
     const schoolId = event.target.value;
     this.setState({schoolId});
     this.props.update(studentId, {schoolId});
   }
+
   render(){
     const {student, schools} = this.props;
     const {id, firstName, lastName, imageUrl, gpa} = student;
     const {schoolId} = this.state;
     const {handleTransfer} = this;
+    
     return (
       <div id={id}>
         <h2>{`${firstName} ${lastName}`}</h2>
@@ -40,13 +46,15 @@ class StudentCard extends Component {
           <label htmlFor='school'>School: </label>
           <br/>
           <select name='schoolId' value={schoolId} onChange={(event) => handleTransfer(event, id)}>
-            <option value=''>-- Select New School --</option>
+            {/* <option value={null}>-- Select New School --</option> */}
             {
               schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
             }
+            <option value=''>None</option>
+            {/* Set value='' in order to avoid default behavior of injecting innert text as value when value={null}. (i.e., value={null} => value='Unenroll'), but needed to add Sequelize `beforeValidate` Hook to set schoolId = null*/}
           </select>
         </form>
-        <form  onSubmit={(event) => this.handleDelete(event, id)}>
+        <form  onSubmit={event => this.handleDelete(event, id)}>
           <input type='submit' value='Delete'/>
         </form>
       </div>
@@ -60,7 +68,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   destroy: studentId => dispatch(deleteStudent(studentId)),
-  update: (studentId, studentUpdatesObj) => dispatch(updateStudent(studentId, studentUpdatesObj)),//
+  update: (studentId, studentUpdatesObj) => dispatch(updateStudent(studentId, studentUpdatesObj))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentCard);

@@ -13,7 +13,7 @@ const app = express();
 
 // Body parsing middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+//app.use(express.urlencoded({extended: true}));
 
 // Static
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
@@ -26,7 +26,7 @@ app.get('/', (req, res, next) => {
   }
 });
 
-// Routes
+// API Routes
 app.use('/api', require('./routes/api'));
 
 // Sync then Listen

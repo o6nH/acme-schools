@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
 const Navbar = (props) => {
   const topSchool = props.topSchool || {id:'', name:'None', aveGPA:'N/A'};
@@ -11,17 +11,17 @@ const Navbar = (props) => {
     <div>
       <h1>ACME SCHOOLS</h1>
       <ul>
-        <li><Link to='/'>Home</Link></li>
-        <li><Link to='/schools'>Schools ({`${props.schoolCount}`})</Link></li>
-        <li><Link to='/students'>Students ({`${props.studentCount}`})</Link></li>
+        <li><NavLink to='/'>Home</NavLink></li>
+        <li><NavLink to='/schools'>Schools ({`${props.schoolCount}`})</NavLink></li>
+        <li><NavLink to='/students'>Students ({`${props.studentCount}`})</NavLink></li>
         {
           topId 
-          ? <li><Link to={`/schools/${topId}`}>Top School{` - ${topName} (GPA: ${topGPA})`}</Link></li>
+          ? <li><NavLink to={`/schools/${topId}`}>Top School{` - ${topName} (GPA: ${topGPA})`}</NavLink></li>
           : ''
         }
         {
           popId
-          ? <li><Link to={`/schools/${popId}`}>Most Popular School{` - ${popName} (${popCount})`}</Link></li>
+          ? <li><NavLink to={`/schools/${popId}`}>Most Popular School{` - ${popName} (${popCount})`}</NavLink></li>
           : ''
         }
       </ul>

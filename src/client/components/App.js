@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import Home from './Home';
 import Schools from './Schools';
 import Students from './Students';
+import StudentsByCourse from './StudentsByCourse';
 import StudentForm from './StudentForm';
 import {fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
@@ -22,10 +23,9 @@ class App extends Component {
         <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool}/>}/>
         <Route path='/' component={StudentForm}/>
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
-        <Route exact path='/schools' component={Schools}/> 
-        {/* TODO pass down schools with appended student data */}
+        <Route exact path='/schools' component={Schools}/>
         <Route exact path='/students' component={Students}/>
-        <Route path='/schools/:id' component={Students}/>
+        <Route path='/schools/:id' component={StudentsByCourse}/>
       </HashRouter>
     )
   }

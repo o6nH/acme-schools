@@ -10,7 +10,7 @@ const dbName = 'schools';
 
 const dbUrl = process.env.DATABASE_URL || `${dialect}://${Boolean(username && password) ? `${userInfo}@`: ''}${host}:${port}/${dbName}`;
 
-const db = new Sequelize(dbUrl)//, {logging: false});
+const db = new Sequelize(dbUrl, {logging: false});
 /* Alternative:  
 const db = new Sequelize(dbName, username, password, {
   dialect: 'postgres',

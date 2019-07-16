@@ -44,7 +44,6 @@ class StudentForm extends Component {
         isDisabled = this.isDisabled(firstName, lastName, email);
         break;
     }
-    console.log('change: ', {[name]:value, isDisabled});
     
     this.setState({[name]:value, isDisabled})
   }
@@ -116,7 +115,6 @@ class StudentForm extends Component {
             {
               this.props.schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)
             }
-            <option value={null}>Unenroll</option>
           </select>
           <br/>
           <button disabled={isDisabled} type='submit'>Save</button>

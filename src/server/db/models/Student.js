@@ -41,6 +41,14 @@ const Student = db.define('student', {
   }
 });
 
+// Lifecycle Events (a.k.a. Hooks)
+Student.beforeValidate(studentSubmitted => {
+  if(studentSubmitted.schoolId === '') {
+    studentSubmitted.schoolId = null
+  }
+});
+
+
 // Class Methods
 Student.putItUp = async function (id, updatesObj) {
   const student = await this.findByPk(id);
