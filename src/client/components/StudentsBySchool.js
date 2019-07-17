@@ -12,23 +12,25 @@ class StudentsByCourse extends Component {
     const enrolledStudents = this.props.enrolledStudents || [];
 
     return (
-      <div>
-        <h1>Students at {selectedSchool.name}</h1>
+      <div className='d-flex-column align-items-center'>
+        <h1 className='display-4 text-center'>Students at {selectedSchool.name}</h1>
+        <p className='text-center'> This is a view of all the student at {selectedSchool.name}</p>
+        <p className='text-center'> Caution: Clicking on the select menu, will automatically update school student's school. If a student is transfered to a different school, you can find them in them under the <a href='./#/students'>Students</a> page.</p>
         <StudentSelection schoolId={this.props.schoolId}/>
-        <ul>
+        <div className='d-flex flex-wrap justify-content-center'>
           {
             enrolledStudents.length > 0 
             ? enrolledStudents.map(student => 
-                <li key={student.id}><StudentCard student={student} /></li>
+                <StudentCard key={student.id} student={student} />
               )
-            : 
+            :
             <div>
               <p>There are no students enrolled at {selectedSchool.name}.</p>
               <p>To view all students, <Link to='/students'>click here</Link></p>
               <p>To view all schools, <Link to='/schools'>click here</Link></p>
             </div>
           }
-        </ul>
+        </div>
       </div>
     )
   }

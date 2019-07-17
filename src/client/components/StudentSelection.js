@@ -28,16 +28,18 @@ class StudentSelection extends Component {
     return(
       unenrolledStudents.length > 0
       ? 
-        <form >
-        <label htmlFor='transferringStudentId'>Enroll: </label>
+      <div className='text-center'>
+        <form id='enrolling-form'>
+        <label htmlFor='transferringStudentId'>Enroll a Student: </label>
         <br/>
         <select name='transferringStudentId' value={transferringStudentId} onChange={(event) => handleTransfer(event, selectedSchoolId)}>
-        <option value=''>-- Enroll Student --</option>
+        <option value=''>-- Unenrolled Student --</option>
         {
-          unenrolledStudents.map(student => <option key={student.id} value={student.id}>{student.firstName} {student.lastName}</option>)
+    unenrolledStudents.map(student => <option key={student.id} value={student.id}>{student.firstName} {student.lastName}</option>)
         }
         </select>
         </form>
+      </div>
       : ''
     )
   }

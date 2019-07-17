@@ -7,25 +7,16 @@ import {setSchoolStats} from '../store'; //Imported helper function
 function Schools(props) {
   const {schools, detailedSchools} = props;
   return (
-    <div>
-      <h1>Schools</h1>
+    <div className='d-flex-column align-items-center'>
+      <h1 className='display-2 text-center'>Schools</h1>
+      <div className='d-flex flex-wrap justify-content-center'>
       {
         //if student arrays were appended to school objects
         (detailedSchools.length && detailedSchools[0].students)
-        ? 
-        <ul>
-          {
-            detailedSchools.map(school => <li key={school.id}><SchoolCard school={school}/></li>)
-          }
-        </ul>
-        :
-        <ul>
-          <p>Either there are no students or students weren't properly filtered by school.</p>
-          {
-            schools.map(school => <li key={school.id}><SchoolCard school={school}/></li>)
-          }
-        </ul>
+        ? detailedSchools.map(school => <SchoolCard key={school.id} school={school}/>)
+        : schools.map(school => <SchoolCard  key={school.id} school={school}/>)
       }
+      </div>
     </div>
   )
 }

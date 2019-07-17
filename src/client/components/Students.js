@@ -8,15 +8,17 @@ class Students extends Component {
   render() {
     const students = this.props.students || [];
     return (
-      <div>
-        <h1> Students </h1>
-        <ul>
-          {
-            students.length
-            ? students.map(student => <li key={student.id}><StudentCard key={student.id} student={student} /></li>)
-            : <p>There are no students. Add new students to re-render.</p>
-          }
-        </ul>
+      <div className='d-flex-column align-items-center'>
+        <h1 className='display-3 text-center'> Students </h1>
+        <p className='text-center'> This is a view of all the student in the system.</p>
+        <p className='text-center'> Caution: Clicking on the select menu, will automatically update school student's school.</p>
+        <div className='d-flex flex-wrap justify-content-center'>
+        {
+          students.length
+          ? students.map(student => <StudentCard key={student.id} student={student} />)
+          : <p>There are no students. Add new students to re-render.</p>
+        }
+        </div>
       </div>
     )
   }

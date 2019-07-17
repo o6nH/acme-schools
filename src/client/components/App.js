@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 import Home from './Home';
 import Schools from './Schools';
 import Students from './Students';
-import StudentsByCourse from './StudentsByCourse';
+import StudentsBySchool from './StudentsBySchool';
 import StudentForm from './StudentForm';
 import {fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
@@ -21,11 +21,11 @@ class App extends Component {
       <HashRouter>
         {/* To prevent both the calculations of topSchool and popSchool from happening in multiple components and the storage of top schools and popular schools in the store, this component will pass down stats to both the Navbar and Home components using the render prop for Route*/}
         <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool}/>}/>
-        <Route path='/' component={StudentForm}/>
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
+        <Route exact path='/' component={StudentForm}/>
         <Route exact path='/schools' component={Schools}/>
         <Route exact path='/students' component={Students}/>
-        <Route path='/schools/:id' component={StudentsByCourse}/>
+        <Route path='/schools/:id' component={StudentsBySchool}/>
       </HashRouter>
     )
   }

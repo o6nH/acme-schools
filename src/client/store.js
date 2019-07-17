@@ -118,10 +118,6 @@ const studentReducer = (state = [], action) => {
     case Act.DELETE_STUDENT:
       return state.filter(student => student.id !== action.studentId);
     case Act.UPDATE_STUDENT:
-      /* Reorders (bad)
-      const filteredStateCopy = state.filter(student => student.id !== action.student.id);
-      return [action.student, ...filteredStateCopy];
-      */
       return state.map(student => (student.id === action.student.id) ? action.student : student);
     default:
       return state;

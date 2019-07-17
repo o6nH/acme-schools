@@ -1,0 +1,11 @@
+.form-group {
+  width:80%;
+}
+.card {
+  width: 25%;
+  margin: 10px;
+}
+.card-img-top {
+  width: 75px;
+  height: 75px;
+}
