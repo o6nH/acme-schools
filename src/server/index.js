@@ -2,6 +2,8 @@ const db = require('./db');
 const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
+console.log(seed);
+
 
 // Port assignment
 const port = process.env.PORT || 3000;
@@ -36,6 +38,4 @@ async function listen() {
   })
 };
 
-//SEEDS THE DATA
-seed();
-listen();
+seed().then(()=>listen());

@@ -42,7 +42,6 @@ const seed = async () => {
     await School.bulkCreate(schools);
     await Student.bulkCreate(students);
     console.log('Synced DB. Seeded DB.');
-    db.close();
   } catch (error) {
     console.error('Could not seed database:', error)
     db.close();
