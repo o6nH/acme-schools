@@ -1,7 +1,10 @@
 const db = require('./db');
 const express = require('express');
 const path = require('path');
-const seed = require('./db/seed');//SEEDS THE DATA UPON IMPORT SINCE seed() is last line
+const seed = require('./db/seed');
+
+//SEEDS THE DATA UPON IMPORT SINCE seed() is last line
+seed()
 
 // Port assignment
 const port = process.env.PORT || 3000;
