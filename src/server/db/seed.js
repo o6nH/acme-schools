@@ -43,11 +43,8 @@ const seed = async () => {
     await Student.bulkCreate(students);
     console.log('Synced DB. Seeded DB.')
   } catch (error) {
-    
     console.error('Could not seed database:', error)
-    db.close();
   }
 };
 
 module.exports = seed;
-seed();

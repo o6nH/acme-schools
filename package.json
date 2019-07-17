@@ -6,7 +6,6 @@
   "scripts": {
     "postinstall": "npm run webpack",
     "webpack": "webpack",
-    "seed": "node ./src/server/db/seed.js",
     "bundle:dev": "webpack --watch --mode=development",
     "start:dev": "nodemon ./src/server --ignore ./dist --ignore ./src"
   },
