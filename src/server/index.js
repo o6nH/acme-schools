@@ -3,14 +3,8 @@ const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
 
-//SEEDS THE DATA
-seed();
-
 // Port assignment
 const port = process.env.PORT || 3000;
-
-// Models (asserions included)
-const {School, Student} = require('./db/models');
 
 // Express server app
 const app = express();
@@ -42,4 +36,6 @@ async function listen() {
   })
 };
 
+//SEEDS THE DATA
+seed();
 listen();
