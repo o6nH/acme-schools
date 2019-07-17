@@ -4,7 +4,7 @@
   "description": "practice app for school enrollments using react components, redux stores, react-routers, an express server, sequelize mapping, and a postgres database.",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm run webpack && npm run seed ",
+    "postinstall": "npm run webpack",
     "webpack": "webpack",
     "seed": "node ./src/server/db/seed.js",
     "bundle:dev": "webpack --watch --mode=development",
