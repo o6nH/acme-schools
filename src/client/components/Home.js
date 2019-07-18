@@ -18,7 +18,7 @@ const Home = (props) => {
         }
         {
           popSchool
-          ? <p>The most popular school <Link to={`/schools/${popId}`}>{`${popName}`}</Link> with {`${popCount}`} students.</p>
+          ? <p>The most popular school is <Link to={`/schools/${popId}`}>{`${popName}`}</Link> with {`${popCount}`} students.</p>
           : ''
         }
         </div>
