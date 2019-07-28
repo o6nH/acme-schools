@@ -14,24 +14,26 @@ const app = express();
 app.use(express.json());
 //app.use(express.urlencoded({extended: true}));
 
-// Session Middelware
+// Session Middleware
 app.use(session({
+  name: 'SID',
   secret:'iDKWhatAGoodSessionSecretIs',
-  // Reduces session concurrency issues by not resaving if you haven't changed session.
-  resave: false,
-  // If new, but not modified, still save
-  saveUninitialized: true
+  maxAge: 5*60*60*1000, //hr*(min/hr)*(s/min)*(ms/s)
+  resave: false, // Reduces concurrency issues by not resaving if you haven't changed session.
+  saveUninitialized: true // If new, but not modified, still save (if legal)
 }));
 
 // Session Logging Middleware
 app.use((req, res, next) => {
-  console.log('SESSION: ', req.session)
+  console.log(req.session)
   next()
 })
 
 // Static
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 //app.get('/', express.static(path.join(__dirname, '..', 'public')));
+
+// Root/Home Route
 app.get('/', (req, res, next) => {
   try {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
