@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
 const session = require('express-session');
-const SessionStoreConstructor = require('connect-session-sequelize');
+const SessionStoreConstructor = require('connect-session-sequelize')(session.Store);
 
 // Port assignment
 const port = process.env.PORT || 3000;
