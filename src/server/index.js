@@ -7,6 +7,7 @@ const SessionStoreConstructor = require('connect-session-sequelize')(session.Sto
 
 // Port assignment
 const port = process.env.PORT || 3000;
+const doSeed = process.env.DO_SEED || true;
 
 // Express-Session Store to be saved in Sequelize Model "Session"
 const altSequelizeSessionStore = new SessionStoreConstructor({
@@ -15,8 +16,7 @@ const altSequelizeSessionStore = new SessionStoreConstructor({
   extendDefaultFields: (defaults, sessionInstance) => ({
     data: defaults.data,
     expires: defaults.expires,
-    userId: sessionInstance.userId,
-    sid: sessioinInstance.sid
+    userId: sessionInstance.userId
   })
 });
 
@@ -27,7 +27,7 @@ const app = express();
 app.use(express.json());
 //app.use(express.urlencoded({extended: true}));
 
-// Session Middleware
+// Session Middleware Config
 app.use(session({
   name: 'SID',
   secret:'iDKWhatAGoodSessionSecretIs',
@@ -61,7 +61,7 @@ app.get('/', (req, res, next) => {
 // API Routes
 app.use('/api', require('./routes/api'));
 
-// Sync, then Seed, then Listen
+// Sync DB Connection, then Seed, then Listen
 async function listen() {
   await db.sync();
   console.log('DB synced!');
@@ -70,4 +70,8 @@ async function listen() {
   })
 };
 
-seed().then(()=>listen());
+if (doSeed) {
+  seed().then(()=>listen());
+} else {
+  listen();
+}
