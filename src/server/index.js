@@ -3,9 +3,22 @@ const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
 const session = require('express-session');
+const sessionStoreConstructor = require('connect-session-sequelize');
 
 // Port assignment
 const port = process.env.PORT || 3000;
+
+// Express-Session Store to be saved in Sequelize Model "Session"
+const altSequelizeSessionStore = new sessionStoreConstructor({
+  db, 
+  table: 'session',
+  extendDefaultFields: (defaults, sessionInstance) => ({
+    data: defaults.data,
+    expires: defaults.expires,
+    userId: sessionInstance.userId,
+    sid: sessioinInstance.sid
+  })
+});
 
 // Express server app
 const app = express();
@@ -18,9 +31,12 @@ app.use(express.json());
 app.use(session({
   name: 'SID',
   secret:'iDKWhatAGoodSessionSecretIs',
-  maxAge: 5*60*60*1000, //hr*(min/hr)*(s/min)*(ms/s)
-  resave: false, // Reduces concurrency issues by not resaving if you haven't changed session.
-  saveUninitialized: true // If new, but not modified, still save (if legal)
+  // Reduces concurrency issues by not resaving if you haven't changed session.
+  resave: false,
+  // True => If new, but not modified, still save (if legal)
+  saveUninitialized: false,
+  cookie: {maxAge: 5*60*60*1000}, //hr*(min/hr)*(s/min)*(ms/s)
+  store: altSequelizeSessionStore
 }));
 
 // Session Logging Middleware
