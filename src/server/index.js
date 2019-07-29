@@ -3,13 +3,13 @@ const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
 const session = require('express-session');
-const sessionStoreConstructor = require('connect-session-sequelize');
+const SessionStoreConstructor = require('connect-session-sequelize');
 
 // Port assignment
 const port = process.env.PORT || 3000;
 
 // Express-Session Store to be saved in Sequelize Model "Session"
-const altSequelizeSessionStore = new sessionStoreConstructor({
+const altSequelizeSessionStore = new SessionStoreConstructor({
   db, 
   table: 'session',
   extendDefaultFields: (defaults, sessionInstance) => ({
