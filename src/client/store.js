@@ -10,6 +10,9 @@ const Act = {
   UPDATE_STUDENT: 'UPDATE_STUDENT',
   DELETE_STUDENT: 'DELETE_STUDENT',
   GET_SCHOOLS: 'GET_SCHOOLS',
+  LOGIN: 'LOGIN',
+  GET_USER: 'GET_USER',
+  LOGOUT: 'LOGOUT'
 }
 
 // Exportable Helper Functions
@@ -99,6 +102,26 @@ export const updateStudent = (id, updateObj) => (dispatch, getState, axios) => {
     .catch(err => console.error(err))
 };
 
+export const fetchAuthUser = () => (dispatch, getState, axios) => {
+  axios.get('/api/sessions')
+    .then(({data:user}) => user)
+    .then(({userId}) => dispatch({type: Act.GET_USER, userId}))
+    .catch(err => console.error(err));
+};
+
+export const createAuthSession = (credentials) => (dispatch, getState, axios) => {
+  axios.post('/api/sessions', credentials)
+    .then(({data:user}) => user)
+    .then(({userId}) => dispatch({type: Act.LOGIN, userId}))
+    .catch(err => console.error(err));
+}
+
+export const deleteSession = () => (dispatch, getState, axios) => {
+  axios.delete('/api/sessions')
+    .then(() => dispatch({type: Act.LOGOUT}))
+    .catch(err => console.error(err));
+}
+
 // Reducers (with init states)
 const schoolReducer = (state = [], action) => {
   switch (action.type) {
@@ -110,7 +133,7 @@ const schoolReducer = (state = [], action) => {
 };
 
 const studentReducer = (state = [], action) => {
-  switch(action.type) {
+  switch (action.type) {
     case Act.CREATE_NEW_STUDENT:
       return [action.student, ...state];
     case Act.GET_STUDENTS:
@@ -124,8 +147,22 @@ const studentReducer = (state = [], action) => {
   }
 };
 
+const autherizedUserReducer = (state = '', action) => {
+  switch (action.type) {
+    case Act.LOGIN || Act.GET_USER:
+      return action.userId;
+    case Act.LOGOUT:
+      return '';
+    default:
+      return state;
+  }
+}
+
 // Store (with combined reducers and middlewares)
 export default createStore(
-  combineReducers({schools: schoolReducer, students: studentReducer}), 
+  combineReducers({
+    authUserId: autherizedUserReducer, 
+    schools: schoolReducer, 
+    students: studentReducer}), 
   applyMiddleware(loggingMiddleware, thunksMiddleware.withExtraArgument(axios))
 );
