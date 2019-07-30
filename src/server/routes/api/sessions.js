@@ -16,7 +16,7 @@ router.route('/')
           try{
             // Set userId in Session Store (does not use res.cookie())
             req.session.userId = user.id;
-            res.status(200).send(`New session, ${req.session.id},  was created for user ${user.firstName}.`);
+            res.send({userId: user.id});
           }
           catch (err) {
             res.status(404).send('Either cookies were not saved by the client/browser, or Session Store failed.');
@@ -33,7 +33,7 @@ router.route('/')
   .get((req, res, next) => {
     try {
       if(req.session.userId) {
-        res.send(req.session.userId);
+        res.send({userId: req.session.userId});
       }
       else {
         res.status(403).redirect('/');
@@ -47,7 +47,7 @@ router.route('/')
     try {
       if(req.session.userId) {
         req.session.destroy();
-        res.status(204).redirect('/');
+        res.status(204).send({});
       }
       else {
         res.status(403).redirect('/');
