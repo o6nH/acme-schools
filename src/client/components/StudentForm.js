@@ -10,7 +10,7 @@ const initState = {
   gpa: 0,
   schoolId: '',
   isDisabled: true
-}
+};
 
 // Controlled Form Component
 class StudentForm extends Component {
@@ -46,7 +46,7 @@ class StudentForm extends Component {
     }
     
     this.setState({[name]:value, isDisabled})
-  }
+  };
   
   isDisabled(firstName, lastName, email){
     return !(firstName && lastName && email);
@@ -60,7 +60,7 @@ class StudentForm extends Component {
     gpa = (!schoolId && !gpa) ? null : gpa;
     submitForm({...this.state, schoolId, gpa});
     this.setState(initState);
-  }
+  };
 
   //Form Component Render
   render() {
@@ -124,7 +124,7 @@ class StudentForm extends Component {
       </div>
     )
   }
-}
+};
 
 // Mappings from Redux Store to Component Props
 const mapStateToProps = (state) => ({
@@ -135,9 +135,9 @@ const mapDispatchToProps = (dispatch) => ({
   submitForm: (studentForm) => {
     const student = {...studentForm};
     delete student.isDisabled;
-    dispatch(createStudent(student))
+    dispatch(createStudent(student));
   }
-})
+});
 
 // Export of Store-Connected Container Component
-export default connect(mapStateToProps, mapDispatchToProps)(StudentForm)
+export default connect(mapStateToProps, mapDispatchToProps)(StudentForm);
