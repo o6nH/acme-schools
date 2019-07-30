@@ -1,4 +1,5 @@
 const db = require('./db');
+const morgan = require('morgan')
 const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
@@ -13,17 +14,20 @@ const doSeed = process.env.DO_SEED || true;
 const altSequelizeSessionStore = new SessionStoreConstructor({
   db, 
   table: 'session',
-  extendDefaultFields: (defaults, sessionInstance) => ({
+  extendDefaultFields: (defaults, session) => ({
     data: defaults.data,
     expires: defaults.expires,
-    userId: sessionInstance.userId
+    userId: session.userId
   })
 });
 
 // Express server app
 const app = express();
 
-// Body parsing middleware
+// Logging Middleware
+app.use(morgan('dev'));
+
+// Body Parsing Middleware
 app.use(express.json());
 //app.use(express.urlencoded({extended: true}));
 
@@ -41,7 +45,8 @@ app.use(session({
 
 // Session Logging Middleware
 app.use((req, res, next) => {
-  console.log(req.session)
+  console.log('req.headers.cookie: ', req.headers.cookie);
+  console.log('req.session.id:', req.session.id);
   next()
 })
 
