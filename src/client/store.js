@@ -105,7 +105,10 @@ export const updateStudent = (id, updateObj) => (dispatch, getState, axios) => {
 export const fetchAuthUser = () => (dispatch, getState, axios) => {
   axios.get('/api/sessions')
     .then(({data:user}) => user)
-    .then(({userId}) => dispatch({type: Act.GET_USER, userId}))
+    .then(({userId}) => {
+      if(!userId) userId = '';
+      dispatch({type: Act.GET_USER, userId});
+    })
     .catch(err => console.error(err));
 };
 
