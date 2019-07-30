@@ -149,7 +149,8 @@ const studentReducer = (state = [], action) => {
 
 const autherizedUserReducer = (state = '', action) => {
   switch (action.type) {
-    case Act.LOGIN || Act.GET_USER:
+    case Act.LOGIN:
+    case Act.GET_USER:
       return action.userId;
     case Act.LOGOUT:
       return '';
