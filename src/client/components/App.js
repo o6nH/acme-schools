@@ -8,14 +8,23 @@ import Students from './Students';
 import StudentsBySchool from './StudentsBySchool';
 import StudentForm from './StudentForm';
 import Login from './Login'
-import {fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
+import {fetchAuthUser, fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
 // Component
 class App extends Component {
   componentDidMount(){
+    this.props.getUserId();
     this.props.getSchools();
     this.props.getStudents();
   };
+
+  componentDidUpdate(prevProps) {
+    if(this.props.authUserId && this.props.authUserId !== prevProps.authUserId) {
+      this.props.getSchools();
+      this.props.getStudents();
+    }
+  };
+
   render(){
     const {authUserId, schoolCount, studentCount, topSchool, popSchool} = this.props;
     return(
@@ -25,19 +34,20 @@ class App extends Component {
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
         <Route exact path='/login' component={Login} />
         {
-          !authUserId.length
-          ? <Redirect to='/login' /> 
+          !authUserId
+          ? <Redirect to='/login' />
           : <Switch>
               <Route exact path='/' component={StudentForm}/>
               <Route exact path='/schools' component={Schools}/>
               <Route exact path='/students' component={Students}/>
               <Route path='/schools/:id' component={StudentsBySchool}/>
+              <Redirect to='/' />
             </Switch>
         }
       </HashRouter>
     )
   }
-}
+};
 
 // Mappings from Redux's State Store to React Component
 const mapStateToProps = (state) => {
@@ -49,12 +59,13 @@ const mapStateToProps = (state) => {
     topSchool: getTopSchool(schools, students),
     popSchool: getPopSchool(schools, students)
   }
-}
+};
 
 const mapDispatchToProps = (dispatch) => ({
+  getUserId: () => dispatch(fetchAuthUser()),
   getSchools: () => dispatch(fetchSchools()),
   getStudents: () => dispatch(fetchStudents())
-})
+});
 
 // Export of Container Component Connected to App Component
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App);
