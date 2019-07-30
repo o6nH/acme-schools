@@ -14,7 +14,7 @@ class StudentsByCourse extends Component {
     return (
       <div className='d-flex-column align-items-center'>
         <h1 className='display-4 text-center'>Students at {selectedSchool.name}</h1>
-        <p className='text-center'> This is a view of all the student at {selectedSchool.name}</p>
+        <p className='text-center'> This is a view of all of the students at {selectedSchool.name}</p>
         <p className='text-center'> Caution: Clicking on the select menu, will automatically update school student's school. If a student is transfered to a different school, you can find them in them under the <a href='./#/students'>Students</a> page.</p>
         <StudentSelection schoolId={this.props.schoolId}/>
         <div className='d-flex flex-wrap justify-content-center'>
