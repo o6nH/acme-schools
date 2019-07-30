@@ -4,13 +4,16 @@ const express = require('express');
 const path = require('path');
 const seed = require('./db/seed');
 const session = require('express-session');
-const SessionStoreConstructor = require('connect-session-sequelize')(session.Store);
+const createSessionStore = require('connect-session-sequelize');
 
 // Port assignment
 const port = process.env.PORT || 3000;
 const doSeed = process.env.DO_SEED || true;
 
-// Express-Session Store to be saved in Sequelize Model "Session"
+// Session Store Constructor 
+const SessionStoreConstructor = createSessionStore(session.Store);
+
+// Sequelize "Session" Model/Store to be used as Express-Session Store (req.sesssion === db.session)
 const altSequelizeSessionStore = new SessionStoreConstructor({
   db, 
   table: 'session',
@@ -33,20 +36,23 @@ app.use(express.json());
 
 // Session Middleware Config
 app.use(session({
-  name: 'SID',
+  //db.session.sid = req.session.id = session.genid(req)
+  name: 'SID', 
+  //{set-cookie:`'${session.name}=${signCookie(req.session.id, session.secret)}'`}===req.cookies.SID
   secret:'iDKWhatAGoodSessionSecretIs',
-  // Reduces concurrency issues by not resaving if you haven't changed session.
+  //Reduces concurrency issues by not resaving if you haven't changed session.
   resave: false,
-  // True => If new, but not modified, still save (if legal)
+  //True => If new, but not modified, still save (if legal)
   saveUninitialized: false,
-  cookie: {maxAge: 5*60*60*1000}, //hr*(min/hr)*(s/min)*(ms/s)
+  cookie: {maxAge: 5*60*60*1000}, //req.session.cookie.expires = date(now+hr*(min/hr)*(s/min)*(ms/s))
   store: altSequelizeSessionStore
 }));
 
 // Session Logging Middleware
 app.use((req, res, next) => {
   console.log('req.headers.cookie: ', req.headers.cookie);
-  console.log('req.session.id:', req.session.id);
+  console.log('req.session.id: ', req.session.id);
+  console.log('req.session.cookie: ', req.session.cookie);
   next()
 })
 

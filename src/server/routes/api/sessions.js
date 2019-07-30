@@ -1,6 +1,9 @@
 const router = require('express').Router();
+
+// Model
 const {Student} = require('../../db/models/index.js');
 
+// Routes
 router.route('/')
   .post(async (req, res, next) => {
     try {
@@ -9,19 +12,19 @@ router.route('/')
         const {email, password} = req.body;
         // Search for user by email and password
         const user = await Student.login(email, password);
-        // Create session
         if(Object.keys(user).length) {
           try{
-            req.session.userId = user.id; // req.session is the Sequelize Session Store/Model;
-            res.send(`New session, ${req.session.id},  was created for user ${user.firstName}.`);
+            // Set userId in Session Store (does not use res.cookie())
+            req.session.userId = user.id;
+            res.status(200).send(`New session, ${req.session.id},  was created for user ${user.firstName}.`);
           }
           catch (err) {
-            res.send('Either cookies were not saved by the client/browser, or Session Store failed.');
+            res.status(404).send('Either cookies were not saved by the client/browser, or Session Store failed.');
           }
         }
-        else res.send('Could not login user. Verify email and/or password, then Try again.');
+        else res.status(401).send('Could not login user. Verify email and/or password, then Try again.');
       }
-      else res.send('The server did not receive the email and/or password.'); 
+      else res.status(403).send('The server did not receive the email and/or password.'); 
     } 
     catch (err) {
       next(err);
@@ -29,11 +32,11 @@ router.route('/')
   })
   .get((req, res, next) => {
     try {
-      if(req.session.cookie) {
+      if(req.session.userId) {
         res.send(req.session.userId);
       }
       else {
-        res.redirect('/');
+        res.status(403).redirect('/');
       }
     } 
     catch (err) {
@@ -41,7 +44,18 @@ router.route('/')
     }
   })
   .delete((req, res, next) => {
-
+    try {
+      if(req.session.userId) {
+        req.session.destroy();
+        res.status(204).redirect('/');
+      }
+      else {
+        res.status(403).redirect('/');
+      }
+    } 
+    catch (err) {
+      next(err)
+    }
   });
 
 module.exports = router;
