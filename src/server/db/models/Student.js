@@ -78,4 +78,14 @@ Student.remove = async function (id) {
   await student.destroy();
 };
 
+Student.login = async function (email, password) {
+  return await this.findOne({
+    where: {
+      email, 
+      password: hash(password) // REMEMBER: we hash our 'password123's in this cohort
+    }
+  })
+
+}
+
 module.exports = Student;
