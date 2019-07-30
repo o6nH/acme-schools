@@ -1,7 +1,7 @@
 const db = require('..');
 
 const Session = db.define('session', {
-  sessionId: {
+  sid: {
     type: db.Sequelize.STRING,
     allowNull: false,
     primaryKey: true,
