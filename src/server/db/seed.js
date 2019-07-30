@@ -27,7 +27,7 @@ const students = [
     const firstName = names[0];
     const lastName = names[1];
     const firstInitial = firstName.split('')[0].toLowerCase();
-    const email = `${firstInitial}${lastName.toLowerCase()}@acme.com`;
+    const email = `${firstInitial}${lastName.toLowerCase()}@acme.edu`;
     const gpa = name === 'Hugo Campos' ? 3.8 : Math.round(200+200*Math.random())/100;
     const schoolId = name.length < 11 
       ? schools[4].id 
