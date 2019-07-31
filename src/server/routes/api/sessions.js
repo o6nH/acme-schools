@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 // Model
-const {Student} = require('../../db/models/index.js');
+const {Student, Session} = require('../../db/models/index.js');
 
 // Routes
 router.route('/')
@@ -14,11 +14,22 @@ router.route('/')
         const user = await Student.login(email, password);
         if(Object.keys(user).length) {
           try{
+            //TODO: take this loging into Session Model
+            // If session exists, use it, instead of creating one 
+            const prevSessions = await Session.findAll({
+              where: {userId: user.id},
+              order: [['updatedAt', 'DESC']]
+            });
+            console.log('prevSessions:', prevSessions);
+            if(prevSessions.length) {
+              await Promise.all(prevSessions.map(sessionInstance => sessionInstance.destroy()));
+            }
             // Set userId in Session Store (does not use res.cookie())
             req.session.userId = user.id;
             res.send({userId: user.id});
           }
           catch (err) {
+            console.log(err)
             res.status(404).send('Either cookies were not saved by the client/browser, or Session Store failed.');
           }
         }
