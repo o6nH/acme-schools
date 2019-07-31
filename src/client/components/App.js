@@ -8,7 +8,7 @@ import Students from './Students';
 import StudentsBySchool from './StudentsBySchool';
 import StudentForm from './StudentForm';
 import Login from './Login'
-import {fetchAuthUser, fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
+import {fetchAuthUser, deleteSession, fetchSchools, fetchStudents, getTopSchool, getPopSchool} from '../store';
 
 // Component
 class App extends Component {
@@ -26,11 +26,11 @@ class App extends Component {
   };
 
   render(){
-    const {authUserId, schoolCount, studentCount, topSchool, popSchool} = this.props;
+    const {authUserId, deleteUserId, schoolCount, studentCount, topSchool, popSchool} = this.props;
     return(
       <HashRouter>
         {/* To prevent both the calculations of topSchool and popSchool from happening in multiple components and the storage of top schools and popular schools in the store, this component will pass down stats to both the Navbar and Home components using the render prop for Route*/}
-        <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool}/>}/>
+        <Route path='/' render={() => <Navbar schoolCount={schoolCount} studentCount={studentCount} topSchool={topSchool} popSchool={popSchool} authUserId={authUserId} deleteUserId={deleteUserId}/>}/>
         <Route exact path='/' render={() => <Home topSchool={topSchool} popSchool={popSchool}/>}/>
         <Route exact path='/login' component={Login} />
         {
@@ -63,6 +63,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   getUserId: () => dispatch(fetchAuthUser()),
+  deleteUserId: () => dispatch(deleteSession()),
   getSchools: () => dispatch(fetchSchools()),
   getStudents: () => dispatch(fetchStudents())
 });
